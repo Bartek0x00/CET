@@ -5,12 +5,9 @@
 	(__STDC_VERSION__ < 202000L) && \
 	!defined(CET_FORCE)
 	
-	#define CET_C23 0
+	#define _CET_C23 0
 #else
-	#define CET_C23 1
+	#define _CET_C23 1
 #endif
-
-#define CET_C23_NEEDED(name) \
-	_Static_assert(CET_C23, name ": C23 version needed")
 
 #endif //_CET_COMMON_H
