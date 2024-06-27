@@ -1,0 +1,19 @@
+html, body {
+	margin: 0;
+	height: 100%;
+}
+
+body {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+	background-color: #181818;
+}
+
+.main {
+	width: 75%;
+	height: 75%;
+	max-width: 1024px;
+	background-color: #282828;
+}
