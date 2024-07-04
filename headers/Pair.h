@@ -6,9 +6,7 @@
 #ifndef CET_LONG_NAMES
 	#define Pair 		CET_Pair
 	#define Pair_make 	CET_Pair_make
-	#if !_CET_C23
-		#define Pair_define CET_Pair_define
-	#endif //!_CET_C23
+	#define Pair_define CET_Pair_define
 #endif //CET_LONG_NAMES
 
 #if _CET_C23
@@ -18,6 +16,8 @@
 		T1 first; \
 		T2 second; \
 	}
+
+#define CET_Pair_define(T1, T2)
 
 #else //_CET_C23
 
@@ -32,11 +32,11 @@
 
 #endif //_CET_C23
 
-#ifdef CET_STRICT_TYPES
+#ifndef CET_STRICT_TYPES
+	#define CET_Pair_make(first, second) {first, second}
+#else
 	#define CET_Pair_make(first, second, T1, T2) \
 		(CET_Pair(T1, T2)){first, second}
-#else
-	#define CET_Pair_make(first, second) {first, second}
 #endif //CET_STRICT_TYPES
 
 #endif //_CET_PAIR_H
