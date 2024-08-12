@@ -10,9 +10,11 @@
 	#define _CET_C23 1
 #endif
 
-#define CET_static_assert(expr, msg) (_CET_C23) ? \
-	static_assert((expr), msg) : \
-	_Static_assert((expr), msg)
+#if _CET_C23
+	#define CET_static_assert(expr, msg) static_assert((expr), msg)
+#else
+	#define CET_static_assert(expr, msg) _Static_assert((expr), msg)
+#endif
 
 #define CET_assert(expr, msg) \
 	((expr)) ? (void)0 : \
@@ -21,5 +23,13 @@
 	 exit(EXIT_FAILURE))
 
 #define CET_error(msg) CET_assert(0, msg)
+
+#define CET_malloc malloc
+
+#define CET_calloc calloc
+
+#define CET_realloc realloc
+
+#define CET_free free
 
 #endif //_CET_COMMON_H
