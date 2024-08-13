@@ -86,10 +86,10 @@
 		"CET_Vector_insert: index out of bounds"); \
 	if (((vec).size + 1) > (vec).capacity) \
 		CET_Vector_resize((vec), 2 * (vec).capacity); \
+	(vec).size++; \
 	for (register size_t i = (vec).size - 1; i > index; i--) \
 		(vec).data[i] = (vec).data[i - 1]; \
 	(vec).data[index] = element; \
-	(vec).size++; \
 } while (0)
 
 #define CET_Vector_at(vec, index) ({ \

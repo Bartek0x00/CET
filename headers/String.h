@@ -107,20 +107,24 @@
 #define CET_BASICSTRING_INIT_CAPACITY 8
 
 #if CET_C23
-	#define CET_BasicString(T) \
+	#define CET_BasicString(T) _CET_BasicString(T)
+	#define _CET_BasicString(T) \
 		struct CET_BasicString_##T { \
 			T *data; \
 			size_t length; \
 			size_t capacity; \
 		}
 	
-	#define CET_BasicString_define(T)
+	#define CET_BasicString_define(T) _CET_BasicString_define(T)
+	#define _CET_BasicString_define(T)
 
 #else
-	#define CET_BasicString(T) \
+	#define CET_BasicString(T) _CET_BasicString(T)
+	#define _CET_BasicString(T) \
 		struct CET_BasicString_##T
 	
-	#define CET_BasicString_define(T) \
+	#define CET_BasicString_define(T) _CET_BasicString_define(T)
+	#define _CET_BasicString_define(T) \
 		CET_BasicString(T) { \
 			T *data; \
 			size_t length; \
@@ -165,10 +169,10 @@
         "CET_BasicString_insert: index out of bounds"); \
     if (((str).length + 1) > (str).capacity) \
         CET_BasicString_resize((str), 2 * (str).capacity); \
-    for (register size_t i = (str).length - 1; i > index; i--) \
+    (str).length++; \
+	for (register size_t i = (str).length - 1; i > index; i--) \
         (str).data[i] = (str).data[i - 1]; \
     (str).data[index] = element; \
-    (str).length++; \
 } while (0)
 
 #define CET_BasicString_at(str, index) ({ \
@@ -193,8 +197,9 @@
 
 #define CET_BasicString_copy(str, dest, pos, len) do { \
 	if (!len) \
-		len = (str).length - pos; \
-	memcpy(dest, ((str).data + pos), len); \
+		memcpy(dest, ((str).data + pos), (str).length); \
+	else \
+		memcpy(dest, ((str).data + pos), len); \
 } while (0)
 
 #define CET_BasicString_find(str, target) \
@@ -210,6 +215,7 @@
 #define CET_BasicString_destroy(str) do { \
 	if (!(str).data) \
 		CET_free((str).data); \
+	(str).data = (size_t)0; \
 	(str).length = (size_t)0; \
 	(str).capacity = (size_t)0; \
 } while (0)

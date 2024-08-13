@@ -14,7 +14,7 @@ TEST destroy(void)
 	
 	Vector_destroy(vec);
 
-	ASSERT(vec.data, NULL);
+	ASSERT(vec.data, 0);
 }
 
 TEST resize(void)
