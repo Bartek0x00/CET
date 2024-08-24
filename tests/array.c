@@ -21,7 +21,9 @@ TEST to_array(void)
 {
 	ARR_TYPE arr2[ARR_SIZE] = {ARR_VAL};
 
-	Array(ARR_TYPE, ARR_SIZE) arr1 = Array_to_array(ARR_TYPE, ARR_SIZE, arr2);
+	Array(ARR_TYPE, ARR_SIZE) arr1 = Array_init(ARR_SIZE);
+	
+	Array_to_array(arr1, arr2);
 
 	ASSERT(memcmp(arr1.data, arr2, ARR_SIZE), 0);
 }

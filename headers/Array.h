@@ -53,11 +53,8 @@
 	.data = {__VA_ARGS__} \
 }
 
-#define CET_Array_to_array(T, N, arr) ({ \
-	CET_Array(T, N) tmp = {.size = N}; \
-	memcpy(tmp.data, (arr), sizeof(T) * N); \
-	tmp; \
-})
+#define CET_Array_to_array(arr, in_arr) \
+	memcpy(arr.data, in_arr, arr.size); 
 
 #define CET_Array_at(arr, index) ({ \
 	CET_assert(!((index) < 0 || (index) >= (arr).size), \

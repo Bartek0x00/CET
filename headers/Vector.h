@@ -110,7 +110,7 @@
 #define CET_Vector_destroy(vec) do { \
 	if (!(vec).data) \
 		CET_free((vec).data); \
-	(vec).data = (size_t)0; \
+	(vec).data = (void *)0; \
 	(vec).size = (size_t)0; \
 	(vec).capacity = (size_t)0; \
 } while (0)

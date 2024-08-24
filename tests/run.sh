@@ -1,5 +1,5 @@
 #!/bin/sh
 
-gcc $1
+clang $1 -std=c23
 ./a.out
 rm a.out

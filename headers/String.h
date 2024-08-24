@@ -13,23 +13,23 @@
 	#define BasicString_front 		CET_BasicString_front
 	#define BasicString_back 		CET_BasicString_back
 	#define BasicString_resize 		CET_BasicString_resize
-	#define BasicString_push_back	CET_BasicString_push_back
-	#define BasicString_pop_back	CET_BasicString_pop_back
+	#define BasicString_push_back		CET_BasicString_push_back
+	#define BasicString_pop_back		CET_BasicString_pop_back
 	#define BasicString_erase		CET_BasicString_erase
 	#define BasicString_insert		CET_BasicString_insert
 	#define BasicString_append		CET_BasicString_append
 	#define BasicString_assign 		CET_BasicString_assign
 	#define BasicString_copy 		CET_BasicString_copy
 	#define BasicString_find 		CET_BasicString_find
-	#define BasicString_compare 	CET_BasicString_compare
-	#define BasicString_destroy 	CET_BasicString_destroy
+	#define BasicString_compare 		CET_BasicString_compare
+	#define BasicString_destroy 		CET_BasicString_destroy
 	#define BasicString_define 		CET_BasicString_define
 
 
-	#define String 					CET_String
+	#define String 				CET_String
 	#define String_init 			CET_String_init
 	#define String_clear 			CET_String_clear
-	#define String_at 				CET_String_at
+	#define String_at 			CET_String_at
 	#define String_front 			CET_String_front
 	#define String_back 			CET_String_back
 	#define String_resize 			CET_String_resize
@@ -45,10 +45,10 @@
 	#define String_destroy 			CET_String_destroy
 	#define String_define 			CET_String_define
 
-	#define WString 				CET_WString
+	#define WString 			CET_WString
 	#define WString_init 			CET_WString_init
 	#define WString_clear 			CET_WString_clear
-	#define WString_at 				CET_WString_at
+	#define WString_at 			CET_WString_at
 	#define WString_front 			CET_WString_front
 	#define WString_back 			CET_WString_back
 	#define WString_resize 			CET_WString_resize
@@ -66,15 +66,15 @@
 
 #endif //CET_LONG_NAMES
 
-#define CET_String 				CET_BasicString(char)
+#define CET_String 			CET_BasicString(char)
 #define CET_String_init 		CET_BasicString_init(char)
 #define CET_String_clear 		CET_BasicString_clear
 #define CET_String_at 			CET_BasicString_at
 #define CET_String_front 		CET_BasicString_front
 #define CET_String_back 		CET_BasicString_back
 #define CET_String_resize 		CET_BasicString_resize
-#define CET_String_push_back 	CET_BasicString_push_back
-#define CET_String_pop_back 	CET_BasicString_pop_back
+#define CET_String_push_back 		CET_BasicString_push_back
+#define CET_String_pop_back 		CET_BasicString_pop_back
 #define CET_String_erase 		CET_BasicString_erase
 #define CET_String_insert 		CET_BasicString_insert
 #define CET_String_append 		CET_BasicString_append
@@ -92,16 +92,16 @@
 #define CET_WString_front 		CET_BasicString_front
 #define CET_WString_back 		CET_BasicString_back
 #define CET_WString_resize 		CET_BasicString_resize
-#define CET_WString_push_back 	CET_BasicString_push_back
-#define CET_WString_pop_back 	CET_BasicString_pop_back
+#define CET_WString_push_back 		CET_BasicString_push_back
+#define CET_WString_pop_back 		CET_BasicString_pop_back
 #define CET_WString_erase 		CET_BasicString_erase
 #define CET_WString_insert 		CET_BasicString_insert
 #define CET_WString_append 		CET_BasicString_append
 #define CET_WString_assign 		CET_BasicString_assign
 #define CET_WString_copy 		CET_BasicString_copy
 #define CET_WString_find 		CET_BasicString_find
-#define CET_WString_compare 	CET_BasicString_compare
-#define CET_WString_destroy 	CET_BasicString_destroy
+#define CET_WString_compare 		CET_BasicString_compare
+#define CET_WString_destroy 		CET_BasicString_destroy
 #define CET_WString_define 		CET_BasicString_define(wchar_t)
 
 #define CET_BASICSTRING_INIT_CAPACITY 8
@@ -215,7 +215,7 @@
 #define CET_BasicString_destroy(str) do { \
 	if (!(str).data) \
 		CET_free((str).data); \
-	(str).data = (size_t)0; \
+	(str).data = (void *)0; \
 	(str).length = (size_t)0; \
 	(str).capacity = (size_t)0; \
 } while (0)
