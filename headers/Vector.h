@@ -3,6 +3,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 #include "Common.h"
 
 #ifndef CET_LONG_NAMES
@@ -24,12 +25,13 @@
 #define CET_VECTOR_INIT_CAPACITY 8
 
 #if CET_C23
-	#define CET_Vector(T) _CET_Vector(T)
+	#define CET_Vector(T) _CET_Vector(CET_TYPE_WRAP(T))
 	#define _CET_Vector(T) \
 		struct CET_Vector_##T { \
 			T *data; \
 			size_t size; \
 			size_t capacity; \
+			void (*destructor)(T*); \
 		}
 	
 	#define CET_Vector_define(T) _CET_Vector_define(T)
@@ -46,73 +48,83 @@
 			T *data; \
 			size_t size; \
 			size_t capacity; \
+			void (*destructor)(T*); \
 		}
 #endif
 
 #define CET_Vector_clear(vec) do { \
-	memset((vec).data, 0, sizeof(*((vec).data)) * (vec).size); \
-	(vec).size = 0; \
+	if ((vec)->destructor) \
+		for (register size_t i = (vec)->size; i-- > 0; ) \
+			(vec)->destructor((vec)->data + i); \
+	memset((vec)->data, 0, sizeof(*((vec)->data)) * (vec)->size); \
+	(vec)->size = 0; \
 } while (0)
 
 #define CET_Vector_resize(vec, new_capacity) do { \
-	(vec).data = CET_realloc((vec).data, \
-		sizeof(*((vec).data)) * (new_capacity)); \
-	if (!(vec).data) \
+	(vec)->data = realloc((vec)->data, \
+		sizeof(*((vec)->data)) * (new_capacity)); \
+	if (!(vec)->data) \
 		CET_error("CET_Vector_resize: cannot allocate memory"); \
-	(vec).capacity = new_capacity; \
+	(vec)->capacity = new_capacity; \
 } while (0)
 
 #define CET_Vector_push_back(vec, element) do { \
-	if (((vec).size + 1) > (vec).capacity) \
-		CET_Vector_resize((vec), 2 * (vec).capacity); \
-	(vec).data[(vec).size++] = element; \
+	if (((vec)->size + 1) > (vec)->capacity) \
+		CET_Vector_resize((vec), 2 * (vec)->capacity); \
+	(vec)->data[(vec)->size++] = element; \
 } while (0)
 
 #define CET_Vector_pop_back(vec) do { \
-	if ((vec).size) \
-		(vec).size--; \
+	if ((vec)->destructor) \
+		(vec)->destructor((vec)->data + ((vec)->size - 1)); \
+	if ((vec)->size) \
+		(vec)->size--; \
 } while (0)
 
 #define CET_Vector_erase(vec, index) do { \
-	CET_assert(!((index) < 0 || (index) >= (vec).size), \
+	CET_assert(!((index) < 0 || (index) >= (vec)->size), \
 		"CET_Vector_erase: index out of bounds"); \
-	for (register size_t i = index; i < (vec).size - 1; i++) \
-		(vec).data[i] = (vec).data[i + 1]; \
-	(vec).size--; \
+	if ((vec)->destructor) \
+		(vec)->destructor((vec)->data + (index)); \
+	for (register size_t i = index; i < (vec)->size - 1; i++) \
+		(vec)->data[i] = (vec)->data[i + 1]; \
+	(vec)->size--; \
 } while (0)
 
 #define CET_Vector_insert(vec, index, element) do { \
-	CET_assert(!((index) < 0 || (index) > (vec).size), \
+	CET_assert(!((index) < 0 || (index) > (vec)->size), \
 		"CET_Vector_insert: index out of bounds"); \
-	if (((vec).size + 1) > (vec).capacity) \
-		CET_Vector_resize((vec), 2 * (vec).capacity); \
-	(vec).size++; \
-	for (register size_t i = (vec).size - 1; i > index; i--) \
-		(vec).data[i] = (vec).data[i - 1]; \
-	(vec).data[index] = element; \
+	if (((vec)->size + 1) > (vec)->capacity) \
+		CET_Vector_resize((vec), 2 * (vec)->capacity); \
+	(vec)->size++; \
+	for (register size_t i = (vec)->size - 1; i > index; i--) \
+		(vec)->data[i] = (vec)->data[i - 1]; \
+	(vec)->data[index] = element; \
 } while (0)
 
 #define CET_Vector_at(vec, index) ({ \
-	CET_assert(!((index) < 0 || (index) >= (vec).size), \
+	CET_assert(!((index) < 0 || (index) >= (vec)->size), \
 		"CET_Vector_at: index out of bounds"); \
-	(vec).data[index]; \
+	(vec)->data[index]; \
 })
 
 #define CET_Vector_front(vec) CET_Vector_at(vec, 0)
 
-#define CET_Vector_back(vec) CET_Vector_at(vec, (vec).size - 1)
+#define CET_Vector_back(vec) CET_Vector_at(vec, (vec)->size - 1)
 
 
-#define CET_Vector_init(T) \
-	{CET_calloc(sizeof(T), CET_VECTOR_INIT_CAPACITY), \
-	 0, CET_VECTOR_INIT_CAPACITY}
+#define CET_Vector_init(T, destructor) \
+	{calloc(sizeof(T), CET_VECTOR_INIT_CAPACITY), \
+	 0, CET_VECTOR_INIT_CAPACITY, destructor}
 
 #define CET_Vector_destroy(vec) do { \
-	if (!(vec).data) \
-		CET_free((vec).data); \
-	(vec).data = (void *)0; \
-	(vec).size = (size_t)0; \
-	(vec).capacity = (size_t)0; \
+	CET_Vector_clear(vec); \
+	if (!(vec)->data) \
+		free((vec)->data); \
+	(vec)->data = (void *)0; \
+	(vec)->size = (size_t)0; \
+	(vec)->capacity = (size_t)0; \
+	(vec)->destructor = (void *)0; \
 } while (0)
 
 #endif //_CET_VECTOR_H

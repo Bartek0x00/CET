@@ -3,11 +3,12 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdbool.h>
 
 #if defined(__STDC_VERSION__) && (__STDC_VERSION__ < 202000L)
-	#define _CET_C23 0
+	#define _CET_C23 false
 #else
-	#define _CET_C23 1
+	#define _CET_C23 true
 #endif
 
 #if _CET_C23
@@ -22,14 +23,6 @@
 	 msg, __FILE__, __LINE__), \
 	 exit(EXIT_FAILURE))
 
-#define CET_error(msg) CET_assert(0, msg)
-
-#define CET_malloc malloc
-
-#define CET_calloc calloc
-
-#define CET_realloc realloc
-
-#define CET_free free
+#define CET_error(msg) CET_assert(0, msg);
 
 #endif //_CET_COMMON_H
